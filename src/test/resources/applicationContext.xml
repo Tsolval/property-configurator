@@ -21,19 +21,22 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
+	<context:component-scan base-package="net.tsolval.config" />
+
+	<bean id="propertyRepository" class="net.tsolval.config.repository.PropertyRepository" />
 	<bean id="domainConfig" class="net.tsolval.config.ApplicationDomainConfig"
 		p:domain="app" p:subDomains="model,web" />
 
-    <!-- Resolve property files and database properties in the correct order. -->
-	<context:property-placeholder 
+	<!-- Resolve property files and database properties in the correct order. -->
+	<context:property-placeholder
 		value-separator="=" ignore-unresolvable="true"
 		ignore-resource-not-found="true" local-override="true" order="5"
 		location="classpath:app.properties" />
-	<context:property-placeholder 
+	<context:property-placeholder
 		value-separator="=" ignore-unresolvable="true"
 		ignore-resource-not-found="true" local-override="true" order="4"
 		location="classpath:app_model.properties" />
-	<context:property-placeholder 
+	<context:property-placeholder
 		value-separator="=" ignore-unresolvable="true"
 		ignore-resource-not-found="true" local-override="true" order="3"
 		location="classpath:app_model_web.properties" />
@@ -46,9 +49,22 @@
 		ignore-resource-not-found="true" local-override="true" order="1"
 		location="classpath:app_final.properties" />
 
+	<jpa:repositories base-package="net.tsolval.config.repository" />
+
 	<jdbc:embedded-database id="datasource" type="H2">
 		<jdbc:script location="classpath:db/sql/create-db.sql" />
 		<jdbc:script location="classpath:db/sql/insert-data.sql" />
 	</jdbc:embedded-database>
+
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+		p:dataSource-ref="datasource" p:persistenceUnitName="h2">
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		</property>
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
+		p:entityManagerFactory-ref="entityManagerFactory" />
 
 </beans>
