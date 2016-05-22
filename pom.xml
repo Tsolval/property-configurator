@@ -6,6 +6,10 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Property Configurator</name>
 	<description>Load properties from files and datasources with logical overloading</description>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.data</groupId>

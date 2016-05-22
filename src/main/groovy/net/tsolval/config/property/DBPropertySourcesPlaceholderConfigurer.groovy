@@ -1,6 +1,8 @@
 package net.tsolval.config.property
 
 import net.tsolval.config.ApplicationDomainConfig
+import net.tsolval.config.data.Property;
+import net.tsolval.config.repository.PropertyRepository;
 
 import java.io.IOException
 
@@ -21,13 +23,15 @@ class DBPropertySourcesPlaceholderConfigurer extends PropertySourcesPlaceholderC
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 		ApplicationDomainConfig domainConfig = beanFactory.getBean('domainConfig')
-		// TODO: fetch PropertyRepository from beanFactory
+		PropertyRepository repository = beanFactory.getBean('propertyRepository')
 
 		final Properties databaseProperties = new Properties()
 
-		// TODO: Fetch properties from PropertyRepository for each domain/subdomain combo
+		List<Property> properties = repository.findByContext('app')
+		properties.each {property ->
+			databaseProperties.put(property.key, property.value)
+		}
 
-		databaseProperties << ['test.prop.app.db':'works']
 		setProperties(databaseProperties)
 
 		super.postProcessBeanFactory(beanFactory);
