@@ -1,0 +1,28 @@
+I need a replacement for CisConfiguration.
+It has to load data in much the same way, must support refreshing, must be configurable via Spring, and must be testable and useful for testing.
+It would be nice if you could still use the CisConfiguration.getProperty(String key) api, for Legacy support purposes.
+
+
+CisConfiguration, as it is setup now, works like so:
+
+The application has a domain and zero or more sub-domains.  The domain, for cis, is 'cis' and the subdomains are 'model,web' for the UI and 'model,batch' for the batch application.  Other domains exist, such as model, but are less used.
+
+These domains are used to select which properties are loaded.
+
+Properties can be loaded from multiple sources.  They are loaded in order, and the sources loaded last should overwrite properties from sources loaded earlier in the process.
+
+For example, when loading the app with domain 'cis' and subdomains 'model,batch', CIS will load properties from the following sources:
+
+property file  : cis.properties
+property file  : cis_model.properties
+property file  : cis_model_batch.properties
+database table : cis_property where domain=cis (lookup query)
+property file  : cis_final.properties
+jvm arguments  : System.getProperty(value, default)
+
+The configuration object should use JVM parameters when they override those given in the files or databases.
+
+We should also create a page to modify any properties and update them in the database layer.  This means that if the property was initially loaded from the cis_final.properties file or jvm arguments, it will be overridden by the application for the duration of the application's remaining up-time, but when the application is restarted, the load order would cause the properties to be loaded database, then final, then jvm, so the property would revert to whatever was set in those layers.
+
+In addition, we should replace CisCache and implement cache loading and refreshing via Spring.
+
