@@ -1,19 +1,19 @@
 package net.tsolval.config.property
 
 import net.tsolval.config.ApplicationDomainConfig
-import net.tsolval.config.data.Property;
-import net.tsolval.config.repository.PropertyRepository;
+import net.tsolval.config.data.Property
+import net.tsolval.config.repository.PropertyRepository
 
 import java.io.IOException
 
-import org.springframework.beans.BeansException;
+import org.springframework.beans.BeansException
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
+import org.springframework.context.ApplicationContextInitializer
+import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer
-import org.springframework.core.env.MutablePropertySources;
-import org.springframework.core.io.support.ResourcePropertySource;
+import org.springframework.core.env.MutablePropertySources
+import org.springframework.core.io.support.ResourcePropertySource
 import org.springframework.stereotype.Component
 
 /** @see https://gist.github.com/rponte/3989915 for more information **/
@@ -27,13 +27,20 @@ class DBPropertySourcesPlaceholderConfigurer extends PropertySourcesPlaceholderC
 
 		final Properties databaseProperties = new Properties()
 
-		List<Property> properties = repository.findByContext('app')
-		properties.each {property ->
+		repository.findByContext('app').each { property ->
+			databaseProperties.put(property.key, property.value)
+		}
+
+		repository.findByContext('app_model').each { property ->
+			databaseProperties.put(property.key, property.value)
+		}
+
+		repository.findByContext('app_model_web').each { property ->
 			databaseProperties.put(property.key, property.value)
 		}
 
 		setProperties(databaseProperties)
 
-		super.postProcessBeanFactory(beanFactory);
+		super.postProcessBeanFactory(beanFactory)
 	}
 }

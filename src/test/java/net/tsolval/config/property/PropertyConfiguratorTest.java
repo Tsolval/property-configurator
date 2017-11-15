@@ -22,6 +22,10 @@ public class PropertyConfiguratorTest {
 	private String appDb;
 	@Value("${test.prop.app.jvm}")
 	private String appJvm;
+	@Value("${test.prop.app.model.db}")
+	private String appModelDb;
+	@Value("${test.prop.app.model.web.db}")
+	private String appModelWebDb;
 
 	@BeforeClass
 	public static void setJvmProps() {
@@ -35,5 +39,7 @@ public class PropertyConfiguratorTest {
 		assertEquals("works", appModelWeb);
 		assertEquals("works", appDb);
 		assertEquals("works", appJvm);
+		assertEquals("works", appModelDb);
+		assertEquals("works", appModelWebDb);
 	}
 }
